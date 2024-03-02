@@ -71,6 +71,8 @@ export type tUpdateExpression = 'UpdateExpression';
 export type tVariableDeclarator = 'VariableDeclarator';
 export type tVariableDeclaration = 'VariableDeclaration';
 export type tWhileStatement = 'WhileStatement';
+
+export type tJsxAttribute = 'JsxAttribute';
 export type tJsxElement = 'JsxElement';
 export type tJsxIdentifier = 'JsxIdentifier';
 export type tJsxText = 'JsxText';
@@ -150,6 +152,7 @@ export const UpdateExpression: tUpdateExpression = 'UpdateExpression';
 export const VariableDeclarator: tVariableDeclarator = 'VariableDeclarator';
 export const VariableDeclaration: tVariableDeclaration = 'VariableDeclaration';
 export const WhileStatement: tWhileStatement = 'WhileStatement';
+export const JsxAttribute: tJsxAttribute = 'JsxAttribute';
 export const JsxElement: tJsxElement = 'JsxElement';
 export const JsxIdentifier: tJsxIdentifier = 'JsxIdentifier';
 export const JsxText: tJsxText = 'JsxText';
