@@ -76,6 +76,8 @@ export type tJsxAttribute = 'JsxAttribute';
 export type tJsxElement = 'JsxElement';
 export type tJsxIdentifier = 'JsxIdentifier';
 export type tJsxText = 'JsxText';
+export type tJsxExprContainer = 'JsxExprContainer';
+export type tJsxEmptyExpr = 'JsxEmptyExpr';
 export type tJsxOpeningElement = 'JsxOpeningElement';
 export type tYieldExpression = 'YieldExpression';
 
@@ -156,5 +158,7 @@ export const JsxAttribute: tJsxAttribute = 'JsxAttribute';
 export const JsxElement: tJsxElement = 'JsxElement';
 export const JsxIdentifier: tJsxIdentifier = 'JsxIdentifier';
 export const JsxText: tJsxText = 'JsxText';
+export const JsxEmptyExpr: tJsxEmptyExpr = 'JsxEmptyExpr';
+export const JsxExprContainer: tJsxExprContainer = 'JsxExprContainer';
 export const JsxOpeningElement: tJsxOpeningElement = 'JsxOpeningElement';
 export const YieldExpression: tYieldExpression = 'YieldExpression';
