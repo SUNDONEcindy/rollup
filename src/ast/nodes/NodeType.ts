@@ -71,6 +71,7 @@ export type tUpdateExpression = 'UpdateExpression';
 export type tVariableDeclarator = 'VariableDeclarator';
 export type tVariableDeclaration = 'VariableDeclaration';
 export type tWhileStatement = 'WhileStatement';
+export type tJsxElement = 'JsxElement';
 export type tYieldExpression = 'YieldExpression';
 
 export const ArrayExpression: tArrayExpression = 'ArrayExpression';
@@ -146,4 +147,5 @@ export const UpdateExpression: tUpdateExpression = 'UpdateExpression';
 export const VariableDeclarator: tVariableDeclarator = 'VariableDeclarator';
 export const VariableDeclaration: tVariableDeclaration = 'VariableDeclaration';
 export const WhileStatement: tWhileStatement = 'WhileStatement';
+export const JsxElement: tJsxElement = 'JsxElement';
 export const YieldExpression: tYieldExpression = 'YieldExpression';
