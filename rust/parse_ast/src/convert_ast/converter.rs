@@ -1,6 +1,6 @@
 use swc_atoms::JsWord;
 use swc_common::Span;
-use swc_ecma_ast::{ArrayLit, ArrayPat, ArrowExpr, AssignExpr, AssignOp, AssignPat, AssignPatProp, AssignTarget, AssignTargetPat, AwaitExpr, BigInt, BinaryOp, BindingIdent, BinExpr, BlockStmt, BlockStmtOrExpr, Bool, BreakStmt, Callee, CallExpr, CatchClause, Class, ClassDecl, ClassExpr, ClassMember, ClassMethod, ClassProp, ComputedPropName, CondExpr, Constructor, ContinueStmt, DebuggerStmt, Decl, DefaultDecl, DoWhileStmt, EmptyStmt, ExportAll, ExportDecl, ExportDefaultDecl, ExportDefaultExpr, ExportNamedSpecifier, ExportSpecifier, Expr, ExprOrSpread, ExprStmt, FnExpr, ForHead, ForInStmt, ForOfStmt, ForStmt, Function, GetterProp, Ident, IfStmt, ImportDecl, ImportDefaultSpecifier, ImportNamedSpecifier, ImportSpecifier, ImportStarAsSpecifier, JSXAttr, JSXAttrName, JSXAttrOrSpread, JSXElement, JSXElementChild, JSXElementName, JSXEmptyExpr, JSXExpr, JSXExprContainer, JSXOpeningElement, JSXText, KeyValuePatProp, KeyValueProp, LabeledStmt, Lit, MemberExpr, MemberProp, MetaPropExpr, MetaPropKind, MethodKind, MethodProp, ModuleDecl, ModuleExportName, ModuleItem, NamedExport, NewExpr, Null, Number, ObjectLit, ObjectPat, ObjectPatProp, OptCall, OptChainBase, OptChainExpr, ParamOrTsParamProp, ParenExpr, Pat, PrivateMethod, PrivateName, PrivateProp, Program, Prop, PropName, PropOrSpread, Regex, RestPat, ReturnStmt, SeqExpr, SetterProp, SimpleAssignTarget, SpreadElement, StaticBlock, Stmt, Str, Super, SuperProp, SuperPropExpr, SwitchCase, SwitchStmt, TaggedTpl, ThisExpr, ThrowStmt, Tpl, TplElement, TryStmt, UnaryExpr, UnaryOp, UpdateExpr, UpdateOp, UsingDecl, VarDecl, VarDeclarator, VarDeclKind, VarDeclOrExpr, WhileStmt, YieldExpr};
+use swc_ecma_ast::{ArrayLit, ArrayPat, ArrowExpr, AssignExpr, AssignOp, AssignPat, AssignPatProp, AssignTarget, AssignTargetPat, AwaitExpr, BigInt, BinaryOp, BindingIdent, BinExpr, BlockStmt, BlockStmtOrExpr, Bool, BreakStmt, Callee, CallExpr, CatchClause, Class, ClassDecl, ClassExpr, ClassMember, ClassMethod, ClassProp, ComputedPropName, CondExpr, Constructor, ContinueStmt, DebuggerStmt, Decl, DefaultDecl, DoWhileStmt, EmptyStmt, ExportAll, ExportDecl, ExportDefaultDecl, ExportDefaultExpr, ExportNamedSpecifier, ExportSpecifier, Expr, ExprOrSpread, ExprStmt, FnExpr, ForHead, ForInStmt, ForOfStmt, ForStmt, Function, GetterProp, Ident, IfStmt, ImportDecl, ImportDefaultSpecifier, ImportNamedSpecifier, ImportSpecifier, ImportStarAsSpecifier, JSXAttr, JSXAttrName, JSXAttrOrSpread, JSXClosingFragment, JSXElement, JSXElementChild, JSXElementName, JSXEmptyExpr, JSXExpr, JSXExprContainer, JSXFragment, JSXOpeningElement, JSXOpeningFragment, JSXText, KeyValuePatProp, KeyValueProp, LabeledStmt, Lit, MemberExpr, MemberProp, MetaPropExpr, MetaPropKind, MethodKind, MethodProp, ModuleDecl, ModuleExportName, ModuleItem, NamedExport, NewExpr, Null, Number, ObjectLit, ObjectPat, ObjectPatProp, OptCall, OptChainBase, OptChainExpr, ParamOrTsParamProp, ParenExpr, Pat, PrivateMethod, PrivateName, PrivateProp, Program, Prop, PropName, PropOrSpread, Regex, RestPat, ReturnStmt, SeqExpr, SetterProp, SimpleAssignTarget, SpreadElement, StaticBlock, Stmt, Str, Super, SuperProp, SuperPropExpr, SwitchCase, SwitchStmt, TaggedTpl, ThisExpr, ThrowStmt, Tpl, TplElement, TryStmt, UnaryExpr, UnaryOp, UpdateExpr, UpdateOp, UsingDecl, VarDecl, VarDeclarator, VarDeclKind, VarDeclOrExpr, WhileStmt, YieldExpr};
 
 use crate::convert_ast::annotations::{AnnotationKind, AnnotationWithType};
 use crate::convert_ast::converter::analyze_code::find_first_occurrence_outside_comment;
@@ -458,10 +458,13 @@ impl<'a> AstConverter<'a> {
       Expr::JSXNamespacedName(_) => unimplemented!("Cannot convert Expr::JSXNamespacedName"),
       Expr::JSXEmpty(_) => unimplemented!("Cannot convert Expr::JSXEmpty"),
       Expr::JSXElement(jsx_element) => {
-        self.convert_jsx_element_expression(jsx_element);
+        self.convert_jsx_element(jsx_element);
         None
       },
-      Expr::JSXFragment(_) => unimplemented!("Cannot convert Expr::JSXFragment"),
+      Expr::JSXFragment(jsx_fragment) => {
+        self.convert_jsx_fragment(jsx_fragment);
+        None
+      }
       Expr::TsTypeAssertion(_) => unimplemented!("Cannot convert Expr::TsTypeAssertion"),
       Expr::TsConstAssertion(_) => unimplemented!("Cannot convert Expr::TsConstAssertion"),
       Expr::TsNonNull(_) => unimplemented!("Cannot convert Expr::TsNonNull"),
@@ -3163,18 +3166,19 @@ impl<'a> AstConverter<'a> {
     // end
     self.add_end(end_position, &yield_expression.span);
   }
-  fn convert_jsx_element_expression(&mut self, jsx_element_expression: &JSXElement) {
+  
+  fn convert_jsx_element(&mut self, jsx_element: &JSXElement) {
     let end_position = self.add_type_and_start(
       &TYPE_JSX_ELEMENT,
-      &jsx_element_expression.span,
+      &jsx_element.span,
       JSX_ELEMENT_RESERVED_BYTES,
       false,
     );
     // openingElement
-    self.store_jsx_opening_element(&jsx_element_expression.opening);
+    self.store_jsx_opening_element(&jsx_element.opening);
 
     // children
-    self.convert_item_list(&jsx_element_expression.children, end_position + JSX_ELEMENT_CHILDREN_OFFSET, |ast_converter, jsx_element_child| {
+    self.convert_item_list(&jsx_element.children, end_position + JSX_ELEMENT_CHILDREN_OFFSET, |ast_converter, jsx_element_child| {
       ast_converter.convert_jsx_element_child(jsx_element_child);
       true
     });
@@ -3184,7 +3188,7 @@ impl<'a> AstConverter<'a> {
     // self.store_jsx_closing()
 
     // end
-    self.add_end(end_position, &jsx_element_expression.span);
+    self.add_end(end_position, &jsx_element.span);
   }
 
   fn convert_jsx_element_child(&mut self, jsx_element_child: &JSXElementChild) {
@@ -3199,12 +3203,11 @@ impl<'a> AstConverter<'a> {
         // self.store_jsx_spread_child(jsx_spread_child);
         unimplemented!("JSXElementChild::JSXSpreadChild")
       }
-      JSXElementChild::JSXFragment(_jsx_fragment) => {
-        // self.store_jsx_fragment(jsx_fragment);
-        unimplemented!("JSXElementChild::JSXFragment")
+      JSXElementChild::JSXFragment(jsx_fragment) => {
+        self.convert_jsx_fragment(jsx_fragment);
       }
       JSXElementChild::JSXElement(jsx_element) => {
-        self.convert_jsx_element_expression(jsx_element);
+        self.convert_jsx_element(jsx_element);
       }
     }
   }
@@ -3292,6 +3295,7 @@ impl<'a> AstConverter<'a> {
       }
     }
   }
+  
   fn store_jsx_attribute_or_spread(&mut self, jsx_attribute: &JSXAttrOrSpread) {
     match jsx_attribute {
       JSXAttrOrSpread::JSXAttr(jsx_attribute) => {
@@ -3302,6 +3306,7 @@ impl<'a> AstConverter<'a> {
       }
     }
   }
+  
   fn store_jsx_attribute(&mut self, jsx_attribute: &JSXAttr) {
     let end_position = self.add_type_and_start(
       &TYPE_JSX_ATTRIBUTE,
@@ -3319,6 +3324,7 @@ impl<'a> AstConverter<'a> {
     // end
     self.add_end(end_position, &jsx_attribute.span);
   }
+  
   fn store_jsx_attr_name(&mut self, jsx_attr_name: &JSXAttrName) {
     let end_position = self.add_type_and_start(
       &TYPE_JSX_IDENTIFIER,
@@ -3343,6 +3349,53 @@ impl<'a> AstConverter<'a> {
         unimplemented!("JSXElementName::JSXNamespacedName")
       }
     }
+
+  }
+  
+  fn convert_jsx_fragment(&mut self, jsx_fragment: &JSXFragment) {
+
+    let end_position = self.add_type_and_start(
+      &TYPE_JSX_FRAGMENT,
+      &jsx_fragment.span,
+      JSX_FRAGMENT_RESERVED_BYTES,
+      false,
+    );
+    // openingFragment
+    self.store_jsx_opening_fragment(jsx_fragment.opening);
+    // children
+    self.convert_item_list(&jsx_fragment.children, end_position + JSX_FRAGMENT_CHILDREN_OFFSET, |ast_converter, jsx_fragment_child| {
+     unimplemented!("Convert JSXFragmentChild");
+      // ast_converter.convert_jsx_fragment_child(jsx_fragment_child);
+     // true
+    });
+    // closingFragment
+    self.update_reference_position(end_position + JSX_FRAGMENT_CLOSING_FRAGMENT_OFFSET);
+    self.store_jsx_closing_fragment(&jsx_fragment.closing);
+    // end
+    self.add_end(end_position, &jsx_fragment.span);
+
+  }
+  
+  fn store_jsx_opening_fragment(&mut self, jsxopening_fragment: JSXOpeningFragment) {
+    let end_position = self.add_type_and_start(
+      &TYPE_JSX_OPENING_FRAGMENT,
+      &jsxopening_fragment.span,
+      JSX_OPENING_FRAGMENT_RESERVED_BYTES,
+      false,
+    );
+    // end
+    self.add_end(end_position, &jsxopening_fragment.span);
+  }
+  
+  fn store_jsx_closing_fragment(&mut self, jsx_closing_fragment: &JSXClosingFragment) {
+    let end_position = self.add_type_and_start(
+      &TYPE_JSX_CLOSING_FRAGMENT,
+      &jsx_closing_fragment.span,
+      JSX_CLOSING_FRAGMENT_RESERVED_BYTES,
+      false,
+    );
+    // end
+    self.add_end(end_position, &jsx_closing_fragment.span);
   }
 }
 

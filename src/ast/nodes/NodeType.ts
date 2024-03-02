@@ -74,6 +74,9 @@ export type tWhileStatement = 'WhileStatement';
 
 export type tJsxAttribute = 'JsxAttribute';
 export type tJsxElement = 'JsxElement';
+export type tJsxClosingFragment = 'JsxClosingFragment';
+export type tJsxOpeningFragment = 'JsxOpeningFragment';
+export type tJsxFragment = 'JsxFragment';
 export type tJsxIdentifier = 'JsxIdentifier';
 export type tJsxText = 'JsxText';
 export type tJsxExprContainer = 'JsxExprContainer';
@@ -161,4 +164,7 @@ export const JsxText: tJsxText = 'JsxText';
 export const JsxEmptyExpr: tJsxEmptyExpr = 'JsxEmptyExpr';
 export const JsxExprContainer: tJsxExprContainer = 'JsxExprContainer';
 export const JsxOpeningElement: tJsxOpeningElement = 'JsxOpeningElement';
+export const JsxClosingFragment: tJsxClosingFragment = 'JsxClosingFragment';
+export const JsxOpeningFragment: tJsxOpeningFragment = 'JsxOpeningFragment';
+export const JsxFragment: tJsxFragment = 'JsxFragment';
 export const YieldExpression: tYieldExpression = 'YieldExpression';
