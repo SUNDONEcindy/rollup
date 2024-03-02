@@ -72,6 +72,8 @@ export type tVariableDeclarator = 'VariableDeclarator';
 export type tVariableDeclaration = 'VariableDeclaration';
 export type tWhileStatement = 'WhileStatement';
 export type tJsxElement = 'JsxElement';
+export type tJsxIdentifier = 'JsxIdentifier';
+export type tJsxOpeningElement = 'JsxOpeningElement';
 export type tYieldExpression = 'YieldExpression';
 
 export const ArrayExpression: tArrayExpression = 'ArrayExpression';
@@ -148,4 +150,6 @@ export const VariableDeclarator: tVariableDeclarator = 'VariableDeclarator';
 export const VariableDeclaration: tVariableDeclaration = 'VariableDeclaration';
 export const WhileStatement: tWhileStatement = 'WhileStatement';
 export const JsxElement: tJsxElement = 'JsxElement';
+export const JsxIdentifier: tJsxIdentifier = 'JsxIdentifier';
+export const JsxOpeningElement: tJsxOpeningElement = 'JsxOpeningElement';
 export const YieldExpression: tYieldExpression = 'YieldExpression';
